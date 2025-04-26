@@ -83,9 +83,9 @@ ss -tn | grep ":22"
 
 6. Determine the CIDR subnet of your VPN client connections (e.g., 10.8.0.0/24)
 
-## Step 4: Secure SSH Access First
+## Step 4: Secure Admin Dashboard Access Only
 
-Apply restrictions to SSH while keeping the dashboard open:
+Apply restrictions to the admin dashboard while keeping SSH open from key locations:
 
 ```bash
 # Clear existing rules
@@ -95,33 +95,28 @@ sudo ufw reset
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 
-# Allow SSH only from VPN subnet (replace with your actual VPN subnet)
-sudo ufw allow from 10.8.0.0/24 to any port 22 proto tcp
+# Allow SSH from anywhere (you can restrict this later if desired)
+sudo ufw allow ssh
 
-# Allow all access to port 5000 temporarily
-sudo ufw allow 5000/tcp
+# Additionally, ensure SSH access from your server subnet and VPN subnet
+# Replace 192.168.1.0/24 with your actual server subnet
+sudo ufw allow from 192.168.1.0/24 to any port 22 proto tcp
+# Replace 10.8.0.0/24 with your actual VPN subnet
+sudo ufw allow from a10.8.0.0/24 to any port 22 proto tcp
+
+# Allow port 5000 only from VPN subnet
+sudo ufw allow from 10.8.0.0/24 to any port 5000 proto tcp
 
 # Enable the firewall
 sudo ufw enable
 ```
 
-Now test SSH access:
-1. While connected to VPN - should work
-2. While disconnected from VPN - should fail
+Now test access:
+1. SSH from anywhere - should work
+2. Admin dashboard while connected to VPN - should work
+3. Admin dashboard while disconnected from VPN - should fail
 
-## Step 5: Secure Admin Dashboard Access
-
-After confirming SSH is properly restricted:
-
-```bash
-# Remove the open access to port 5000
-sudo ufw delete allow 5000/tcp
-
-# Allow port 5000 only from VPN subnet
-sudo ufw allow from 10.8.0.0/24 to any port 5000 proto tcp
-```
-
-## Step 6: Verify Your Configuration
+## Step 5: Verify Your Configuration
 
 Check that your rules are properly configured:
 
