@@ -1,6 +1,6 @@
-ufw-cheat-sheet
+# ufw-cheat-sheet
 
-# Securing Your Admin Dashboard with UFW and VPN
+## Securing Your Admin Dashboard with UFW and VPN
 
 This guide will walk you through the process of securing an Nginx admin dashboard so it's only accessible via VPN, using UFW (Uncomplicated Firewall) to implement OS-level security.
 
